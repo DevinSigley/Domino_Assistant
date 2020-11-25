@@ -148,7 +148,8 @@ public class MainActivity extends Activity implements CvCameraViewListener2 {
     @Override
     public Mat onCameraFrame(CvCameraViewFrame frame) {
         // get current camera frame as OpenCV Mat object
-        Mat mat = frame.gray();
+        //Mat mat = frame.gray();
+        Mat mat = frame.rgba();
 
         // native call to process current camera frame
         adaptiveThresholdFromJNI(mat.getNativeObjAddr());
