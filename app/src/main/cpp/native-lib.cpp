@@ -365,57 +365,19 @@ bool checkForBisectLine(cv::Mat& inputImage, cv::RotatedRect& dominoRect) {
     cv::Mat dominoMask(modifiableDomino.rows, modifiableDomino.cols, CV_8U, cv::Scalar(0));
     cv::Point polyVertices[4];
 
-    cv::Point2f midpointA, midpointB, midpointC; // points along the long sides of the domino RotRec
-    float slope;
     cv::RotatedRect centerThirdRect;
     // Point order is bottomLeft, topLeft, topRight, bottomRight
     // Domino is vertical orientation, so points 0 and 3 are vertices of one (short) side, 1 and 2 are vertices of other short side
     // Get the center 1/4 slice of the domino
     if (dominoRect.size.height > dominoRect.size.width) {
-        slope = (rectPoints[0].y - rectPoints[1].y) / (rectPoints[0].x - rectPoints[1].x);
-        // slope infinite, bad, but now we know the RotRec isn't rotated at all
-        if (std::isinf(slope)) {
-            midpointA.x = minX;
-            midpointA.y = minY + 3 * (maxY - minY) / 8;
-            midpointB.x = minX;
-            midpointB.y = minY + 5 * (maxY - minY) / 8;
-            midpointC.x = maxX;
-            midpointC.y = midpointA.y;
-            centerThirdRect = cv::RotatedRect(midpointC, midpointA, midpointB);
-        }
-        else {
-            midpointA.x = ((rectPoints[0].x * 5) + rectPoints[1].x * 3) / 8;
-            midpointA.y = rectPoints[1].y + (slope * abs(midpointA.x - rectPoints[1].x));
-            midpointB.x = (rectPoints[0].x * 3 + (rectPoints[1].x * 5)) / 8;
-            midpointB.y = rectPoints[1].y + (slope * abs(midpointB.x - rectPoints[1].x));
-            midpointC.x = ((rectPoints[3].x * 5) + rectPoints[2].x * 3) / 8;
-            midpointC.y = rectPoints[2].y + (slope * abs(midpointC.x - rectPoints[2].x));
-            centerThirdRect = cv::RotatedRect(midpointB, midpointA, midpointC);
-        }
+
+        centerThirdRect = cv::RotatedRect(dominoRect.center, cv::Size2f(dominoRect.size.height/3, dominoRect.size.width), dominoRect.angle + 90);
     }
         // Domino is horizontal orientation, so points 0 and 1 are vertices of one (short) side, 2 and 3 are vertices of other short side
     else {
-        slope = (rectPoints[1].x - rectPoints[2].x) / (rectPoints[1].y - rectPoints[2].y);
-        // slope infinite, bad, but now we know the RotRect isn't rotated at all
-        if (std::isinf(slope)) {
-            midpointA.y = minY;
-            midpointA.x = minX + 3 * (maxX - minX) / 8;
-            midpointB.y = minY;
-            midpointB.x = minX + 5 * (maxX - minX) / 8;
-            midpointC.y = maxY;
-            midpointC.x = midpointA.x;
-            centerThirdRect = cv::RotatedRect(midpointC, midpointA, midpointB);
-        }
-        else {
-            midpointA.y = ((rectPoints[1].y * 5) + rectPoints[2].y * 3) / 8;
-            midpointA.x = rectPoints[1].x - (slope * abs(midpointA.y - rectPoints[1].y));
-            midpointB.y = ((rectPoints[1].y * 3) + rectPoints[2].y * 5) / 8;
-            midpointB.x = rectPoints[1].x - (slope * abs(midpointB.y - rectPoints[1].y));
-            midpointC.y = ((rectPoints[0].y * 5) + rectPoints[3].y * 3) / 8;
-            midpointC.x = rectPoints[0].x - (slope * abs(midpointC.y - rectPoints[0].y));
-            centerThirdRect = cv::RotatedRect(midpointC, midpointA, midpointB);
-        }
+        centerThirdRect = cv::RotatedRect(dominoRect.center, cv::Size2f(dominoRect.size.height, dominoRect.size.width/3), dominoRect.angle + 90);
     }
+
 
     // apply mask so we're only looking at center 1/4 of domino
     cv::Point2f maskRectPoints[4];
