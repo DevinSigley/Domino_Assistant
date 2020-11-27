@@ -58,11 +58,12 @@ int processDominoHalf(cv::Mat& inputImage, cv::RotatedRect& dominoHalfRect);
 bool checkForBisectLine(cv::Mat& inputImage, cv::RotatedRect& dominoRect);
 
 extern "C" {
-void JNICALL
+jstring JNICALL
 Java_com_example_dominoassistant_MainActivity_adaptiveThresholdFromJNI(JNIEnv *env,
                                                                        jobject instance,
                                                                        jlong matAddr) {
     cv::Mat &image = *(cv::Mat *) matAddr;
+    std::string resultString = "";
     // for some reason the image retrieved from camera is rotated 90deg CCW, so we have to rotate it to be normal
     cv::rotate(image, image, cv::ROTATE_90_CLOCKWISE);
     cv::Mat element5(3, 3, CV_8U, cv::Scalar(1));
@@ -173,6 +174,8 @@ Java_com_example_dominoassistant_MainActivity_adaptiveThresholdFromJNI(JNIEnv *e
             //std::vector<std::vector<cv::RotatedRect>> slicedDominoes = sliceDominoes(possibleDominoRotRects);
             std::vector<std::vector<cv::RotatedRect>> slicedDominoes = sliceDominoes(dominoRotRectsFinalFiltered);
             std::vector<Domino> dominoes;
+            std::stringstream resultStream;
+
             // For each domino, process each half
             for (int i = 0; i < slicedDominoes.size(); ++i) {
                 Domino currentDomino;
@@ -183,8 +186,10 @@ Java_com_example_dominoassistant_MainActivity_adaptiveThresholdFromJNI(JNIEnv *e
                               currentDomino.numberB); // ensure A is the smaller number (style choice)
 
                 }
+                resultStream << currentDomino.numberA << "," << currentDomino.numberB << ";";
                 dominoes.push_back(currentDomino);
             }
+            resultString = resultStream.str();
 
             // Output the original picture with overlaid contours and domino identifiers
             //cv::Mat originalWithText = image.clone();
@@ -197,7 +202,7 @@ Java_com_example_dominoassistant_MainActivity_adaptiveThresholdFromJNI(JNIEnv *e
                  cv::Point2f rectPoints[4];
                 dominoRotRectsFinalFiltered[i].points(rectPoints);
                 for (int j = 0; j < 4; ++j) {
-                    cv::line(image, rectPoints[j], rectPoints[(j + 1) % 4], cv::Scalar(0, 255, 0), 2);
+                    cv::line(image, rectPoints[j], rectPoints[(j + 1) % 4], cv::Scalar(0, 255, 0), 3);
                 }
             }
             // Write text after drawing all rectangles so that text is on top.
@@ -212,7 +217,7 @@ Java_com_example_dominoassistant_MainActivity_adaptiveThresholdFromJNI(JNIEnv *e
             }
         }
     }
-
+    return env->NewStringUTF(resultString.c_str());
 }
 }
 
@@ -267,8 +272,8 @@ int processDominoHalf(cv::Mat &inputImage, cv::RotatedRect &dominoHalfRect) {
     int maxX = std::max({ rectPoints[0].x, rectPoints[1].x, rectPoints[2].x, rectPoints[3].x });
     int minY = std::min({ rectPoints[0].y, rectPoints[1].y, rectPoints[2].y, rectPoints[3].y });
     int maxY = std::max({ rectPoints[0].y, rectPoints[1].y, rectPoints[2].y, rectPoints[3].y });
-    int boundingWidth = maxX - minX;
-    int boundingHeight = maxY - minY;
+    //int boundingWidth = maxX - minX;
+    //int boundingHeight = maxY - minY;
 
     cv::Mat dominoROI(inputImage, cv::Range(minY, maxY), cv::Range(minX, maxX));
     cv::Mat modifiableDomino = dominoROI.clone();
@@ -309,7 +314,7 @@ int processDominoHalf(cv::Mat &inputImage, cv::RotatedRect &dominoHalfRect) {
     std::vector<std::vector<cv::Point>> contoursTreeFiltered;
     for (int i = 0; i < contoursTree.size(); ++i) {
         cv::RotatedRect rect = cv::minAreaRect(contoursTree[i]);
-        if (abs(rect.size.aspectRatio() - 1) < 0.5) {
+        if (abs(rect.size.aspectRatio() - 1) < 0.65) {
             if (rect.size.area() > 80 && rect.size.area() < modifiableDomino.rows * modifiableDomino.cols / 4) {
                 contoursTreeFiltered.push_back(contoursTree[i]);
             }
@@ -336,7 +341,7 @@ int processDominoHalf(cv::Mat &inputImage, cv::RotatedRect &dominoHalfRect) {
     params.filterByConvexity = false;
     params.filterByArea = true;
     params.minArea = 80;
-    params.maxArea = 2000;
+    params.maxArea = 10000;
     params.filterByColor = true;
     params.blobColor = 0;
     cv::Ptr<cv::SimpleBlobDetector> detector = cv::SimpleBlobDetector::create(params);
@@ -356,8 +361,6 @@ bool checkForBisectLine(cv::Mat& inputImage, cv::RotatedRect& dominoRect) {
     int maxX = std::max({ rectPoints[0].x, rectPoints[1].x, rectPoints[2].x, rectPoints[3].x });
     int minY = std::min({ rectPoints[0].y, rectPoints[1].y, rectPoints[2].y, rectPoints[3].y });
     int maxY = std::max({ rectPoints[0].y, rectPoints[1].y, rectPoints[2].y, rectPoints[3].y });
-    int boundingWidth = maxX - minX;
-    int boundingHeight = maxY - minY;
 
     cv::Mat dominoROI(inputImage, cv::Range(minY, maxY), cv::Range(minX, maxX));
     cv::Mat modifiableDomino = dominoROI.clone();
@@ -407,8 +410,8 @@ bool checkForBisectLine(cv::Mat& inputImage, cv::RotatedRect& dominoRect) {
     std::vector<std::vector<cv::Point>> contoursTreeFiltered;
     for (int i = 0; i < contoursTree.size(); ++i) {
         cv::RotatedRect rect = cv::minAreaRect(contoursTree[i]);
-        if (rect.size.aspectRatio() > 6 || rect.size.aspectRatio() < 0.125) {
-            if (rect.size.area() > 250 && rect.size.area() < maskedROI.rows * maskedROI.cols / 7) {
+        if (rect.size.aspectRatio() > 6 || rect.size.aspectRatio() < 0.2) {
+            if (rect.size.area() > 180 && rect.size.area() < maskedROI.rows * maskedROI.cols / 7) {
                 contoursTreeFiltered.push_back(contoursTree[i]);
             }
         }

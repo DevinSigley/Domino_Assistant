@@ -40,7 +40,10 @@ import android.os.Bundle;
 import androidx.core.app.ActivityCompat;
 import android.util.Log;
 import android.view.SurfaceView;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.jetbrains.annotations.NotNull;
@@ -51,6 +54,8 @@ import org.opencv.android.CameraBridgeViewBase.CvCameraViewListener2;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.core.Mat;
+
+import java.util.ArrayList;
 
 public class MainActivity extends Activity implements CvCameraViewListener2 {
     private static final String TAG = "MainActivity";
@@ -152,11 +157,22 @@ public class MainActivity extends Activity implements CvCameraViewListener2 {
         Mat mat = frame.rgba();
 
         // native call to process current camera frame
-        adaptiveThresholdFromJNI(mat.getNativeObjAddr());
-
+        String testString = adaptiveThresholdFromJNI(mat.getNativeObjAddr());
+        Log.d(TAG, testString);
+        ArrayList<Domino> dominos = Domino.decodeDominoes(testString);
         // return processed frame for live preview
         return mat;
     }
 
-    private native void adaptiveThresholdFromJNI(long mat);
+    private native String adaptiveThresholdFromJNI(long mat);
+
+    public void stopCamera(View view){
+        mOpenCvCameraView.disableView();
+        //Log.d(TAG, "Pressed stopCamera");
+    }
+    public void startCamera(View view){
+        mOpenCvCameraView.enableView();
+        //Log.d(TAG, "Pressed startCamera");
+    }
+
 }
