@@ -59,9 +59,9 @@ bool checkForBisectLine(cv::Mat& inputImage, cv::RotatedRect& dominoRect);
 
 extern "C" {
 jstring JNICALL
-Java_com_example_dominoassistant_MainActivity_adaptiveThresholdFromJNI(JNIEnv *env,
-                                                                       jobject instance,
-                                                                       jlong matAddr) {
+Java_com_example_dominoassistant_MainActivity_processImageFromJNI(JNIEnv *env,
+                                                                  jobject instance,
+                                                                  jlong matAddr) {
     cv::Mat &image = *(cv::Mat *) matAddr;
     std::string resultString = "";
     // for some reason the image retrieved from camera is rotated 90deg CCW, so we have to rotate it to be normal
@@ -213,7 +213,7 @@ Java_com_example_dominoassistant_MainActivity_adaptiveThresholdFromJNI(JNIEnv *e
                 cv::putText(image, dominoInfo, dominoRotRectsFinalFiltered[i].center,
                             cv::FONT_HERSHEY_PLAIN, 2, cv::Scalar(0, 0, 0), 4, cv::LINE_AA);
                 cv::putText(image, dominoInfo, dominoRotRectsFinalFiltered[i].center,
-                            cv::FONT_HERSHEY_PLAIN, 2, cv::Scalar(0, 165, 255), 2);
+                            cv::FONT_HERSHEY_PLAIN, 2, cv::Scalar(255, 165, 0), 2);
             }
         }
     }

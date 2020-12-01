@@ -35,6 +35,7 @@ package com.example.dominoassistant;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import androidx.core.app.ActivityCompat;
@@ -42,8 +43,7 @@ import android.util.Log;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.Button;
 import android.widget.Toast;
 
 import org.jetbrains.annotations.NotNull;
@@ -60,6 +60,8 @@ import java.util.ArrayList;
 public class MainActivity extends Activity implements CvCameraViewListener2 {
     private static final String TAG = "MainActivity";
     private static final int CAMERA_PERMISSION_REQUEST = 1;
+    private boolean userStopped = false;
+    private String dominoesString;
 
     private CameraBridgeViewBase mOpenCvCameraView;
 
@@ -72,7 +74,16 @@ public class MainActivity extends Activity implements CvCameraViewListener2 {
                 // Load native library after(!) OpenCV initialization
                 System.loadLibrary("native-lib");
 
-                mOpenCvCameraView.enableView();
+                Button button = findViewById(R.id.startStopCameraButton);
+                if (userStopped){
+                    //mOpenCvCameraView.enableView();
+                    userStopped = false;
+                    startStopCamera();
+                }
+//                if (button.getText().equals(getResources().getString(R.string.resume_camera))) {
+//                    startStopCamera();
+//                    //mOpenCvCameraView.enableView();
+//                }
             } else {
                 super.onManagerConnected(status);
             }
@@ -81,6 +92,10 @@ public class MainActivity extends Activity implements CvCameraViewListener2 {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        if (!OpenCVLoader.initDebug()) {
+            Log.d(TAG, "Internal OpenCV library not found. Using OpenCV Manager for initialization");
+            OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION, this, mLoaderCallback);
+        }
         Log.i(TAG, "called onCreate");
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -119,8 +134,16 @@ public class MainActivity extends Activity implements CvCameraViewListener2 {
     @Override
     public void onPause() {
         super.onPause();
-        if (mOpenCvCameraView != null)
-            mOpenCvCameraView.disableView();
+        if (mOpenCvCameraView != null){
+            if (!userStopped){
+                startStopCamera();
+            }
+//            Button button = findViewById(R.id.startStopCameraButton);
+//            if (button.getText().equals(getResources().getString(R.string.pause_camera))) {
+//
+//            }
+            //mOpenCvCameraView.disableView();
+        }
     }
 
     @Override
@@ -157,14 +180,14 @@ public class MainActivity extends Activity implements CvCameraViewListener2 {
         Mat mat = frame.rgba();
 
         // native call to process current camera frame
-        String testString = adaptiveThresholdFromJNI(mat.getNativeObjAddr());
-        Log.d(TAG, testString);
-        ArrayList<Domino> dominos = Domino.decodeDominoes(testString);
+        dominoesString = processImageFromJNI(mat.getNativeObjAddr());
+        Log.d(TAG, dominoesString);
+        //ArrayList<Domino> dominos = Domino.decodeDominoes(dominoesString);
         // return processed frame for live preview
         return mat;
     }
 
-    private native String adaptiveThresholdFromJNI(long mat);
+    private native String processImageFromJNI(long mat);
 
     public void stopCamera(View view){
         mOpenCvCameraView.disableView();
@@ -175,4 +198,35 @@ public class MainActivity extends Activity implements CvCameraViewListener2 {
         //Log.d(TAG, "Pressed startCamera");
     }
 
+    private void startStopCamera(){
+        Button button = findViewById(R.id.startStopCameraButton);
+        Button captureDominoesButton = findViewById(R.id.captureDominoesButton);
+        if (button.getText().equals(getResources().getString(R.string.pause_camera))){
+            mOpenCvCameraView.disableView();
+            button.setText(getResources().getString(R.string.resume_camera));
+            captureDominoesButton.setVisibility(View.VISIBLE);
+        }
+        else {
+            mOpenCvCameraView.enableView();
+            button.setText(getResources().getString(R.string.pause_camera));
+            captureDominoesButton.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    public void startStopCamera(View view){
+        Button button = findViewById(R.id.startStopCameraButton);
+        if (button.getText().equals(getResources().getString(R.string.pause_camera))){
+            userStopped = true;
+        }
+        else {
+            userStopped = false;
+        }
+        startStopCamera();
+    }
+
+    public void captureDominoes(View view) {
+        Intent intent = new Intent(getBaseContext(), SelectDominoesActivity.class);
+        intent.putExtra("dominoesString", dominoesString);
+        startActivity(intent);
+    }
 }

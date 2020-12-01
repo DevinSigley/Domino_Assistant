@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -15,20 +16,22 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/stopCamera"
+            android:id="@+id/startStopCameraButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:onClick="stopCamera"
-            android:text="Stop Camera" />
+            android:onClick="startStopCamera"
+            android:text="@string/resume_camera"
+            tools:visibility="visible" />
 
         <Button
-            android:id="@+id/startCamera"
+            android:id="@+id/captureDominoesButton"
             android:layout_width="171dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:onClick="startCamera"
-            android:text="Start Camera" />
+            android:onClick="captureDominoes"
+            android:text="Capture dominoes"
+            android:visibility="invisible" />
 
     </LinearLayout>
 
