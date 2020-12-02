@@ -89,8 +89,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:backgroundTint="#F44336"
-                android:text="Remove"
-                android:onClick="removeDomino"/>
+                android:onClick="removeDomino"
+                android:text="Remove" />
 
 
         </TableRow>
@@ -157,8 +157,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:backgroundTint="#F44336"
-                android:text="Remove"
-                android:onClick="removeDomino"/>
+                android:onClick="removeDomino"
+                android:text="Remove" />
 
 
         </TableRow>
@@ -225,8 +225,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:backgroundTint="#F44336"
-                android:text="Remove"
-                android:onClick="removeDomino"/>
+                android:onClick="removeDomino"
+                android:text="Remove" />
 
 
         </TableRow>
@@ -293,8 +293,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:backgroundTint="#F44336"
-                android:text="Remove"
-                android:onClick="removeDomino"/>
+                android:onClick="removeDomino"
+                android:text="Remove" />
 
 
         </TableRow>
@@ -361,8 +361,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:backgroundTint="#F44336"
-                android:text="Remove"
-                android:onClick="removeDomino"/>
+                android:onClick="removeDomino"
+                android:text="Remove" />
 
 
         </TableRow>
@@ -429,8 +429,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:backgroundTint="#F44336"
-                android:text="Remove"
-                android:onClick="removeDomino"/>
+                android:onClick="removeDomino"
+                android:text="Remove" />
 
 
         </TableRow>
@@ -497,8 +497,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:backgroundTint="#F44336"
-                android:text="Remove"
-                android:onClick="removeDomino"/>
+                android:onClick="removeDomino"
+                android:text="Remove" />
 
 
         </TableRow>
@@ -565,8 +565,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:backgroundTint="#F44336"
-                android:text="Remove"
-                android:onClick="removeDomino"/>
+                android:onClick="removeDomino"
+                android:text="Remove" />
 
 
         </TableRow>
@@ -633,8 +633,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:backgroundTint="#F44336"
-                android:text="Remove"
-                android:onClick="removeDomino"/>
+                android:onClick="removeDomino"
+                android:text="Remove" />
 
 
         </TableRow>
@@ -701,8 +701,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:backgroundTint="#F44336"
-                android:text="Remove"
-                android:onClick="removeDomino"/>
+                android:onClick="removeDomino"
+                android:text="Remove" />
 
 
         </TableRow>
@@ -769,8 +769,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:backgroundTint="#F44336"
-                android:text="Remove"
-                android:onClick="removeDomino"/>
+                android:onClick="removeDomino"
+                android:text="Remove" />
 
 
         </TableRow>
@@ -837,8 +837,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:backgroundTint="#F44336"
-                android:text="Remove"
-                android:onClick="removeDomino"/>
+                android:onClick="removeDomino"
+                android:text="Remove" />
 
 
         </TableRow>
@@ -905,8 +905,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:backgroundTint="#F44336"
-                android:text="Remove"
-                android:onClick="removeDomino"/>
+                android:onClick="removeDomino"
+                android:text="Remove" />
 
 
         </TableRow>
@@ -973,11 +973,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:backgroundTint="#F44336"
-                android:text="Remove"
-                android:onClick="removeDomino"/>
+                android:onClick="removeDomino"
+                android:text="Remove" />
 
 
         </TableRow>
+
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -1968,35 +1969,36 @@
 
     </TableLayout>
 
-    <LinearLayout
-        android:id="@+id/addSubmitButtonsLayout"
-        android:layout_width="match_parent"
+    <Button
+        android:id="@+id/addDominoButton"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:orientation="horizontal"
+        android:backgroundTint="#2196F3"
+        android:onClick="addDomino"
+        android:text="Add Domino"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent" />
 
 
-        <Button
-            android:id="@+id/addDominoButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="#2196F3"
-            android:text="Add Domino" />
 
-        <Space
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
+    <Button
+        android:id="@+id/submitDominoesButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:backgroundTint="#4CAF50"
+        android:text="Submit"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-        <Button
-            android:id="@+id/submitDominoesButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="#4CAF50"
-            android:text="Submit" />
-    </LinearLayout>
+    <TextView
+        android:id="@+id/totalPipsText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Total pips:"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/submitDominoesButton"
+        app:layout_constraintStart_toEndOf="@+id/addDominoButton"
+        app:layout_constraintTop_toTopOf="@id/addDominoButton" />
 </androidx.constraintlayout.widget.ConstraintLayout>

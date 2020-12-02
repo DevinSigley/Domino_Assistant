@@ -61,7 +61,9 @@ public class MainActivity extends Activity implements CvCameraViewListener2 {
     private static final String TAG = "MainActivity";
     private static final int CAMERA_PERMISSION_REQUEST = 1;
     private boolean userStopped = false;
-    private String dominoesString;
+    private String dominoesString = "";
+    private String newDominoes;
+    private String intentString;
 
     private CameraBridgeViewBase mOpenCvCameraView;
 
@@ -114,6 +116,11 @@ public class MainActivity extends Activity implements CvCameraViewListener2 {
         mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
 
         mOpenCvCameraView.setCvCameraViewListener(this);
+
+        intentString = getIntent().getStringExtra("dominoesString");
+        if (intentString != null){
+            dominoesString = intentString;
+        }
     }
 
     @Override
@@ -180,7 +187,9 @@ public class MainActivity extends Activity implements CvCameraViewListener2 {
         Mat mat = frame.rgba();
 
         // native call to process current camera frame
-        dominoesString = processImageFromJNI(mat.getNativeObjAddr());
+        //dominoesString = processImageFromJNI(mat.getNativeObjAddr());
+        newDominoes = processImageFromJNI(mat.getNativeObjAddr());
+
         Log.d(TAG, dominoesString);
         //ArrayList<Domino> dominos = Domino.decodeDominoes(dominoesString);
         // return processed frame for live preview
@@ -225,6 +234,13 @@ public class MainActivity extends Activity implements CvCameraViewListener2 {
     }
 
     public void captureDominoes(View view) {
+        if (intentString != null){
+            dominoesString = dominoesString.concat(newDominoes);
+        }
+        else {
+            dominoesString = newDominoes;
+        }
+        Log.d(TAG, dominoesString);
         Intent intent = new Intent(getBaseContext(), SelectDominoesActivity.class);
         intent.putExtra("dominoesString", dominoesString);
         startActivity(intent);

@@ -16,7 +16,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.DominoAssistant">
-        <activity android:name=".SelectDominoesActivity"></activity>
+        <activity android:name=".AddDominoActivity"
+                  android:theme="@android:style/Theme.Holo.Dialog"/>
+        <activity android:name=".SelectDominoesActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

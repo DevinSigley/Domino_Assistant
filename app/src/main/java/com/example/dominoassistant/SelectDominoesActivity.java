@@ -50,6 +50,9 @@ public class SelectDominoesActivity extends AppCompatActivity {
             }
         });
 
+        TextView totalPipsText = (TextView) findViewById(R.id.totalPipsText);
+        totalPipsText.setText("Total pips: " + String.valueOf(Domino.sumDominoes(dominoes)));
+
         TableLayout leftDominoesTable = findViewById(R.id.dominoesTableLayoutLeft);
         TableLayout rightDominoesTable = findViewById(R.id.dominoesTableLayoutRight);
 
@@ -131,6 +134,13 @@ public class SelectDominoesActivity extends AppCompatActivity {
         }
         String imageName = "pips_" + numberSuffix;
         return getResources().getIdentifier(imageName, "drawable", getPackageName());
+    }
+
+    // Used to start a Dialog for manually adding a Domino to the selection
+    public void addDomino(View view){
+        Intent intent = new Intent(getBaseContext(), AddDominoActivity.class);
+        intent.putExtra("dominoesString", Domino.getDominoesString(dominoes));
+        startActivity(intent);
     }
 }
 
