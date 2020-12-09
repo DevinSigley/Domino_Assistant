@@ -47,7 +47,13 @@ public class AddDominoActivity extends Activity {//extends AppCompatActivity {
             Toast.makeText(this, "Please enter the pip values", Toast.LENGTH_LONG).show();
         }
         else {
-            dominoesString = dominoesString.concat(numberAString + "," + numberBString + ";");
+            if (Integer.parseInt(numberAString) < Integer.parseInt(numberBString)){
+                dominoesString = dominoesString.concat(numberAString + "," + numberBString + ";");
+            }
+            else {
+                dominoesString = dominoesString.concat(numberBString + "," + numberAString + ";");
+            }
+
             Intent intent = new Intent(getBaseContext(), SelectDominoesActivity.class);
             intent.putExtra("dominoesString", dominoesString);
             startActivity(intent);

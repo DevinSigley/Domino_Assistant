@@ -36,6 +36,7 @@ public class SelectDominoesActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTitle("Domino Selection");
         setContentView(R.layout.activity_select_dominoes);
 
         // Get the dominoes sent via Intent
@@ -51,7 +52,9 @@ public class SelectDominoesActivity extends AppCompatActivity {
         });
 
         TextView totalPipsText = (TextView) findViewById(R.id.totalPipsText);
-        totalPipsText.setText("Total pips: " + String.valueOf(Domino.sumDominoes(dominoes)));
+        //totalPipsText.setText("Total pips: " + String.valueOf(Domino.sumDominoes(dominoes)));
+        totalPipsText.setText(String.valueOf(Domino.sumDominoes(dominoes)) + " pips");
+
 
         TableLayout leftDominoesTable = findViewById(R.id.dominoesTableLayoutLeft);
         TableLayout rightDominoesTable = findViewById(R.id.dominoesTableLayoutRight);
@@ -139,6 +142,12 @@ public class SelectDominoesActivity extends AppCompatActivity {
     // Used to start a Dialog for manually adding a Domino to the selection
     public void addDomino(View view){
         Intent intent = new Intent(getBaseContext(), AddDominoActivity.class);
+        intent.putExtra("dominoesString", Domino.getDominoesString(dominoes));
+        startActivity(intent);
+    }
+
+    public void buildTrains(View view) {
+        Intent intent = new Intent(getBaseContext(), CalculateTrainsActivity.class);
         intent.putExtra("dominoesString", Domino.getDominoesString(dominoes));
         startActivity(intent);
     }
