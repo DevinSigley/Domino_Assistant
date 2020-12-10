@@ -13,6 +13,8 @@ import android.os.Bundle;
 import android.text.Layout;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -41,6 +43,9 @@ public class SelectDominoesActivity extends AppCompatActivity {
 
         // Get the dominoes sent via Intent
         String dominoesString = getIntent().getStringExtra("dominoesString");
+        if (dominoesString == null){
+            dominoesString = "";
+        }
         dominoes = Domino.decodeDominoes(dominoesString);
         // Sort by first domino number, then by second domino number, low to high
         Collections.sort(dominoes, new Comparator<Domino>() {
@@ -142,14 +147,45 @@ public class SelectDominoesActivity extends AppCompatActivity {
     // Used to start a Dialog for manually adding a Domino to the selection
     public void addDomino(View view){
         Intent intent = new Intent(getBaseContext(), AddDominoActivity.class);
-        intent.putExtra("dominoesString", Domino.getDominoesString(dominoes));
+        if (dominoes != null && dominoes.size() > 0){
+            intent.putExtra("dominoesString", Domino.getDominoesString(dominoes));
+        }
+        else {
+            intent.putExtra("dominoesString", "");
+        }
         startActivity(intent);
     }
 
     public void buildTrains(View view) {
-        Intent intent = new Intent(getBaseContext(), CalculateTrainsActivity.class);
-        intent.putExtra("dominoesString", Domino.getDominoesString(dominoes));
-        startActivity(intent);
+        if (dominoes != null && dominoes.size() > 0){
+            Intent intent = new Intent(getBaseContext(), SelectStartingPipActivity.class);
+            intent.putExtra("dominoesString", Domino.getDominoesString(dominoes));
+            startActivity(intent);
+        }
+        else {
+            Toast.makeText(this, "Please select dominoes before computing trains", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    // Apply custom layout to menu bar to include "Clear dominoes" button
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // R.menu.mymenu is a reference to an xml file named mymenu.xml which should be inside your res/menu directory.
+        // If you don't have res/menu, just create a directory named "menu" inside res
+        getMenuInflater().inflate(R.menu.select_dominoes_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    // Handle "Clear dominoes" button from action bar
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_clear_dominoes) {
+            Intent intent = new Intent(getBaseContext(), SelectDominoesActivity.class);
+            startActivity(intent);
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
 

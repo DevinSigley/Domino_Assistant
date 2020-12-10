@@ -57,7 +57,7 @@ import org.opencv.core.Mat;
 
 import java.util.ArrayList;
 
-public class MainActivity extends Activity implements CvCameraViewListener2 {
+public class CameraActivity extends Activity implements CvCameraViewListener2 {
     private static final String TAG = "MainActivity";
     private static final int CAMERA_PERMISSION_REQUEST = 1;
     private boolean userStopped = false;

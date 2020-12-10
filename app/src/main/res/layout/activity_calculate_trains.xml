@@ -6,13 +6,106 @@
     android:layout_height="match_parent"
     tools:context=".CalculateTrainsActivity">
 
-    <TextView
-        android:id="@+id/trainBuilderTestText"
+
+    <Button
+        android:id="@+id/calculateTrainsSelectDominoButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        android:backgroundTint="#2196F3"
+        android:onClick="selectDominoes"
+        android:text="Select Dominoes"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/calculateTrainsTrainText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Train"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/calculateTrainsLengthText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="Length"
+        app:layout_constraintEnd_toStartOf="@+id/calculateTrainsDoublesText"
+        app:layout_constraintTop_toTopOf="@+id/calculateTrainsTrainText" />
+
+    <View
+        android:id="@+id/dividerTrainLength"
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintBottom_toTopOf="@+id/calculateTrainsSelectDominoButton"
+        app:layout_constraintEnd_toStartOf="@+id/calculateTrainsLengthText"
+        app:layout_constraintStart_toEndOf="@+id/calculateTrainsTrainText" />
+
+    <View
+        android:id="@+id/dividerLengthDoubles"
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintBottom_toBottomOf="@id/dividerTrainLength"
+        app:layout_constraintEnd_toStartOf="@+id/calculateTrainsDoublesText"
+        app:layout_constraintStart_toEndOf="@+id/calculateTrainsLengthText" />
+
+    <View
+        android:id="@+id/dividerDoublesPoints"
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintBottom_toBottomOf="@id/dividerTrainLength"
+        app:layout_constraintEnd_toStartOf="@+id/calculateTrainsPointsText"
+        app:layout_constraintStart_toEndOf="@+id/calculateTrainsDoublesText" />
+
+    <View
+        android:id="@+id/dividerBottom"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintBottom_toTopOf="@+id/calculateTrainsSelectDominoButton"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <View
+        android:id="@+id/dividerTop"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintBottom_toBottomOf="@+id/calculateTrainsTrainText"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/calculateTrainsDoublesText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="Doubles"
+        app:layout_constraintEnd_toStartOf="@+id/calculateTrainsPointsText"
+        app:layout_constraintTop_toTopOf="@+id/calculateTrainsLengthText" />
+
+    <TextView
+        android:id="@+id/calculateTrainsPointsText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="Points"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/calculateTrainsDoublesText" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/calculateTrainsTrainText"
+        tools:layout_editor_absoluteX="28dp">
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,14 +2,12 @@ package com.example.dominoassistant;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Stack;
 
 public class DominoTrainSolver {
     private ArrayList<Domino> dominoes;
-    private ArrayList<ArrayList<DominoTrainNode>> dominoTrains;
+    private ArrayList<DominoTrain> dominoTrains;
     private boolean[] nodesAvailable;
     private ArrayList<ArrayList<Integer>> dominoAdjacencyList;
-    //private ArrayList<Integer> leafIndices;
     private ArrayList<DominoTrainNode> referenceNodes;
 
     public DominoTrainSolver(ArrayList<Domino> dominoes) {
@@ -18,9 +16,6 @@ public class DominoTrainSolver {
         Arrays.fill(nodesAvailable, true);
         dominoTrains = new ArrayList<>();
         referenceNodes = new ArrayList<>();
-        //leafIndices = new Stack<>();
-
-
         // create adjacency list for domino indices
         dominoAdjacencyList = new ArrayList<>();
         for (int i = 0; i < dominoes.size(); ++i){
@@ -44,46 +39,41 @@ public class DominoTrainSolver {
         }
     }
 
-    public ArrayList<ArrayList<DominoTrainNode>> solveForTrains() {
+    public ArrayList<DominoTrain> solveForTrains(int startingPips) {
         // Calculate trains where each of the dominoes is the start
         for (int i = 0; i < dominoes.size(); ++i){
-            solveForOneDomino(i);
+            if (dominoes.get(i).numberA == startingPips){
+                solveForOneDomino(i, true);
+            }
+            else if (dominoes.get(i).numberB == startingPips){
+                solveForOneDomino(i, false);
+            }
         }
         return dominoTrains;
     }
 
-    public void solveForOneDomino(int startingDominoIndex){
-        ArrayList<DominoTrainNode> startingTrain = DominoTrainNode.clone(referenceNodes);
-        startingTrain.get(startingDominoIndex).numberARootward = true;
+    public void solveForOneDomino(int startingDominoIndex, boolean numberARootward){
+        DominoTrain startingTrain = new DominoTrain(startingDominoIndex);
+        startingTrain.train = DominoTrainNode.clone(referenceNodes);
+        startingTrain.train.get(startingDominoIndex).numberARootward = numberARootward;
+        startingTrain.length = 1;
+        startingTrain.numPoints += dominoes.get(startingDominoIndex).numberA + dominoes.get(startingDominoIndex).numberB;
+        if (startingTrain.train.get(startingDominoIndex).doubleTile){
+            startingTrain.numDoubles++;
+        }
         ArrayList<Integer> leafIndices = new ArrayList<>();
         leafIndices.add(startingDominoIndex);
         recursiveDFS(startingDominoIndex, startingTrain, leafIndices);
 
-        // TODO: solve domino when .numberARootward = false
-
-/*        leafIndices.push(startingDominoIndex);
-
-        while (!leafIndices.isEmpty()){
-            int currentIndex = leafIndices.pop();
-            for (int i = 0; i < dominoAdjacencyList.get(currentIndex).size() - 1; ++i){
-                int potentialIndex = dominoAdjacencyList.get(currentIndex).get(i);
-                if (nodesAvailable[potentialIndex]){
-
-                }
-            }
-        }
-*/
-
-        // First, search as if numberA has to be matched
-
     }
 
-    private void recursiveDFS(int node, ArrayList<DominoTrainNode> currentTrain, ArrayList<Integer> leafIndices){
+    private void recursiveDFS(int node, DominoTrain currentTrain, ArrayList<Integer> leafIndices){
+        boolean anyNodeAddedToTree = false;
         nodesAvailable[node] = false;
         // no leaves have available adjacent dominoes, so record train
-        if (leafIndices.isEmpty()){
+        if (leafIndices.size() == 0){
             // record train
-            dominoTrains.add(DominoTrainNode.clone(currentTrain));
+            dominoTrains.add(DominoTrain.clone(currentTrain));
         }
         else {
             for (int i = 0; i < leafIndices.size(); ++i){
@@ -92,102 +82,62 @@ public class DominoTrainSolver {
                 for (int j = 0; j < dominoAdjacencyList.get(leafIndex).size() - 1; ++j){
                     int nodeBeingVisited = dominoAdjacencyList.get(leafIndex).get(j);
                     if (nodesAvailable[nodeBeingVisited]){
-                        // TODO: check if == numberA or == numberB
+                        DominoTrain copyCurrentTrain = new DominoTrain();
+                        boolean thisNodeAddedToTree = false;
                         // current numberB matches new numberA
-                        if (currentTrain.get(leafIndex).numberARootward && dominoes.get(leafIndex).numberB == dominoes.get(nodeBeingVisited).numberA){
-                            ArrayList<DominoTrainNode> copyCurrentTrain = DominoTrainNode.clone(currentTrain);
-                            copyCurrentTrain.get(leafIndex).setNextIndex(nodeBeingVisited);
-                            copyCurrentTrain.get(nodeBeingVisited).numberARootward = true;
-                            copyCurrentTrain.get(nodeBeingVisited).parentNodeIndex = leafIndex;
-                            ArrayList<Integer> copyLeafIndices = new ArrayList<>(leafIndices);
-                            copyLeafIndices.remove(i);
-                            copyLeafIndices.add(nodeBeingVisited);
-                            if (copyCurrentTrain.get(nodeBeingVisited).doubleTile){
-                                copyLeafIndices.add(nodeBeingVisited);
-                                copyLeafIndices.add(nodeBeingVisited);
-                            }
-                            recursiveDFS(nodeBeingVisited, copyCurrentTrain, copyLeafIndices);
+                        if (currentTrain.train.get(leafIndex).numberARootward && dominoes.get(leafIndex).numberB == dominoes.get(nodeBeingVisited).numberA){
+                            copyCurrentTrain = DominoTrain.clone(currentTrain);
+                            copyCurrentTrain.train.get(nodeBeingVisited).numberARootward = true;
+                            thisNodeAddedToTree = true;
                         }
 
-                        else if (currentTrain.get(leafIndex).numberARootward && dominoes.get(leafIndex).numberB == dominoes.get(nodeBeingVisited).numberB){
-                            ArrayList<DominoTrainNode> copyCurrentTrain = DominoTrainNode.clone(currentTrain);
-                            copyCurrentTrain.get(leafIndex).setNextIndex(nodeBeingVisited);
-                            copyCurrentTrain.get(nodeBeingVisited).numberARootward = false;
-                            copyCurrentTrain.get(nodeBeingVisited).parentNodeIndex = leafIndex;
-                            ArrayList<Integer> copyLeafIndices = new ArrayList<>(leafIndices);
-                            copyLeafIndices.remove(i);
-                            copyLeafIndices.add(nodeBeingVisited);
-                            if (copyCurrentTrain.get(nodeBeingVisited).doubleTile){
-                                copyLeafIndices.add(nodeBeingVisited);
-                                copyLeafIndices.add(nodeBeingVisited);
-                            }
-                            recursiveDFS(nodeBeingVisited, copyCurrentTrain, copyLeafIndices);
+                        else if (currentTrain.train.get(leafIndex).numberARootward && dominoes.get(leafIndex).numberB == dominoes.get(nodeBeingVisited).numberB){
+                            copyCurrentTrain = DominoTrain.clone(currentTrain);
+                            copyCurrentTrain.train.get(nodeBeingVisited).numberARootward = false;
+                            thisNodeAddedToTree = true;
                         }
 
-                        else if (!currentTrain.get(leafIndex).numberARootward && dominoes.get(leafIndex).numberA == dominoes.get(nodeBeingVisited).numberA){
-                            ArrayList<DominoTrainNode> copyCurrentTrain = DominoTrainNode.clone(currentTrain);
-                            copyCurrentTrain.get(leafIndex).setNextIndex(nodeBeingVisited);
-                            copyCurrentTrain.get(nodeBeingVisited).numberARootward = true;
-                            copyCurrentTrain.get(nodeBeingVisited).parentNodeIndex = leafIndex;
-                            ArrayList<Integer> copyLeafIndices = new ArrayList<>(leafIndices);
-                            copyLeafIndices.remove(i);
-                            copyLeafIndices.add(nodeBeingVisited);
-                            if (copyCurrentTrain.get(nodeBeingVisited).doubleTile){
-                                copyLeafIndices.add(nodeBeingVisited);
-                                copyLeafIndices.add(nodeBeingVisited);
-                            }
-                            recursiveDFS(nodeBeingVisited, copyCurrentTrain, copyLeafIndices);
+                        else if (!currentTrain.train.get(leafIndex).numberARootward && dominoes.get(leafIndex).numberA == dominoes.get(nodeBeingVisited).numberA){
+                            copyCurrentTrain = DominoTrain.clone(currentTrain);
+                            copyCurrentTrain.train.get(nodeBeingVisited).numberARootward = true;
+                            thisNodeAddedToTree = true;
                         }
 
-                        else if (!currentTrain.get(leafIndex).numberARootward && dominoes.get(leafIndex).numberA == dominoes.get(nodeBeingVisited).numberB){
-                            ArrayList<DominoTrainNode> copyCurrentTrain = DominoTrainNode.clone(currentTrain);
-                            copyCurrentTrain.get(leafIndex).setNextIndex(nodeBeingVisited);
-                            copyCurrentTrain.get(nodeBeingVisited).numberARootward = false;
-                            copyCurrentTrain.get(nodeBeingVisited).parentNodeIndex = leafIndex;
+                        else if (!currentTrain.train.get(leafIndex).numberARootward && dominoes.get(leafIndex).numberA == dominoes.get(nodeBeingVisited).numberB){
+                            copyCurrentTrain = DominoTrain.clone(currentTrain);
+                            copyCurrentTrain.train.get(nodeBeingVisited).numberARootward = false;
+                            thisNodeAddedToTree = true;
+                        }
+
+                        if (thisNodeAddedToTree){
+                            anyNodeAddedToTree = true;
+                            copyCurrentTrain.train.get(leafIndex).setNextIndex(nodeBeingVisited);
+                            copyCurrentTrain.train.get(nodeBeingVisited).parentNodeIndex = leafIndex;
                             ArrayList<Integer> copyLeafIndices = new ArrayList<>(leafIndices);
                             copyLeafIndices.remove(i);
                             copyLeafIndices.add(nodeBeingVisited);
-                            if (copyCurrentTrain.get(nodeBeingVisited).doubleTile){
+                            if (copyCurrentTrain.train.get(nodeBeingVisited).doubleTile){
+                                copyCurrentTrain.numDoubles++;
                                 copyLeafIndices.add(nodeBeingVisited);
                                 copyLeafIndices.add(nodeBeingVisited);
                             }
+                            copyCurrentTrain.length++;
+                            copyCurrentTrain.numPoints += dominoes.get(nodeBeingVisited).numberA + dominoes.get(nodeBeingVisited).numberB;
                             recursiveDFS(nodeBeingVisited, copyCurrentTrain, copyLeafIndices);
                         }
-                        // add it to the current train, add it as a leaf?
-                        // TODO: pass copies of currentTrain and leafIndices?
                     }
                 }
-                leafIndices.remove(leafIndex);
+
+                leafIndices.remove(i);
                 i--;
             }
-        }
-        nodesAvailable[node] = true;
-        // pop its leaf?
-
-    }
-    /*
-    private void recursiveDFS(int node, boolean matchNumberA, ArrayList<DominoTrainNode> currentTrain){
-        nodesAvailable[node] = false;
-        // no leaves have available adjacent dominoes, so record train
-        if (leafIndices.isEmpty()){
-            // TODO: record train
-        }
-        else {
-            for (int i = 0; i < leafIndices.size(); ++i){
-                // Check each adjacent node to see if it can be added to end of this leaf
-                for (int j = 0; j < dominoAdjacencyList.get(node).size() - 1; ++j){
-                    int nodeBeingVisited = dominoAdjacencyList.get(node).get(j);
-                    if (nodesAvailable[nodeBeingVisited]){
-                        // TODO: check if == numberA or == numberB
-                        // add it to the current train, add it as a leaf?
-                    }
-                }
+            if (leafIndices.size() == 0 && !anyNodeAddedToTree){
+                // record train
+                dominoTrains.add(DominoTrain.clone(currentTrain));
             }
         }
         nodesAvailable[node] = true;
         // pop its leaf?
 
     }
-    */
-
 }

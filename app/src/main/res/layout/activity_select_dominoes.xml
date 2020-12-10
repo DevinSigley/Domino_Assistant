@@ -1989,7 +1989,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:backgroundTint="#4CAF50"
-        android:text="Submit"
+        android:text="Get Trains"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:onClick="buildTrains"/>
@@ -1998,7 +1998,7 @@
         android:id="@+id/totalPipsText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Total pips:"
+        android:text="0 pips"
         android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/submitDominoesButton"

@@ -59,9 +59,9 @@ bool checkForBisectLine(cv::Mat& inputImage, cv::RotatedRect& dominoRect);
 
 extern "C" {
 jstring JNICALL
-Java_com_example_dominoassistant_MainActivity_processImageFromJNI(JNIEnv *env,
-                                                                  jobject instance,
-                                                                  jlong matAddr) {
+Java_com_example_dominoassistant_CameraActivity_processImageFromJNI(JNIEnv *env,
+                                                                    jobject instance,
+                                                                    jlong matAddr) {
     cv::Mat &image = *(cv::Mat *) matAddr;
     std::string resultString = "";
     // for some reason the image retrieved from camera is rotated 90deg CCW, so we have to rotate it to be normal

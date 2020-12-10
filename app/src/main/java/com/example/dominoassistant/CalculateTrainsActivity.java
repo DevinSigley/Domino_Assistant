@@ -2,105 +2,48 @@ package com.example.dominoassistant;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 
 public class CalculateTrainsActivity extends AppCompatActivity {
     private ArrayList<Domino> dominoes;
+    private DominoTrainSolver trainSolver;
+    ArrayList<DominoTrain> solvedTrains;
+    ArrayList<DominoTrain> uniqueTrains;
     private String dominoesString;
+    private String startingPipsString;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calculate_trains);
+        setTitle("Potential Trains");
 
         dominoesString = getIntent().getStringExtra("dominoesString");
+        startingPipsString = getIntent().getStringExtra("startingPips");
         dominoes = Domino.decodeDominoes(dominoesString);
-
-        ArrayList<ArrayList<DominoTrainNode>> dominoTrains = new ArrayList<>();
-        ArrayList<DominoTrainNode> referenceTrain = new ArrayList<>();
-        for (int i = 0; i < dominoes.size(); ++i){
-            DominoTrainNode node = new DominoTrainNode(dominoes.get(i));
-            referenceTrain.add(node);
-        }
-
-        // adjacency list containing domino indices
-        ArrayList<ArrayList<Integer>> dominoAdjacencyList = new ArrayList<>();
-        for (int i = 0; i < dominoes.size(); ++i){
-            Domino currentDomino = dominoes.get(i);
-            ArrayList<Integer> currentList = new ArrayList<>();
-            for (int j = 0; j < dominoes.size(); ++j){
-                if (i != j){
-                    Domino queriedDomino = dominoes.get(j);
-                    if (currentDomino.numberA == queriedDomino.numberA || currentDomino.numberA == queriedDomino.numberB || currentDomino.numberB == queriedDomino.numberA || currentDomino.numberB == queriedDomino.numberB){
-                        currentList.add(j);
-                    }
-                }
+        trainSolver = new DominoTrainSolver(dominoes);
+        solvedTrains = trainSolver.solveForTrains(Integer.parseInt(startingPipsString));
+        // sort trains, with priority in order of length, number of doubles, then number of points
+        Collections.sort(solvedTrains, (train, t1) -> 100000 * (t1.length - train.length) + 1000 * (t1.numDoubles - train.numDoubles) + (t1.numPoints - train.numPoints));
+        uniqueTrains = new ArrayList<>();
+        uniqueTrains.add(solvedTrains.get(0));
+        for (int i = 1; i < solvedTrains.size(); ++i){
+            if (!solvedTrains.get(i).equals(solvedTrains.get(i-1))){
+                uniqueTrains.add(solvedTrains.get(i));
             }
-            currentList.add(-1);
-            dominoAdjacencyList.add(currentList);
         }
-
-        // keep track of dominoes already in train
-        boolean[] nodeAvailable = new boolean[dominoes.size()];
-
-        // TODO: support double-dominoes, support specifying a starting pip number, allow backtracking to find multiple trains
-        for (int i = 0; i < dominoes.size(); ++i){
-            Arrays.fill(nodeAvailable, true);
-            nodeAvailable[i] = false;
-            ArrayList<DominoTrainNode> currentTrain = new ArrayList<>();
-            DominoTrainNode parentNode = new DominoTrainNode(dominoes.get(i));
-            int currentEndValue = parentNode.domino.numberA;
-
-            int j = i;
-            int k = 0;
-            int currentAdjacencyValue = dominoAdjacencyList.get(j).get(k);
-            while (currentAdjacencyValue != -1){
-                if (nodeAvailable[currentAdjacencyValue]){
-                    Domino tmpDomino = dominoes.get(currentAdjacencyValue);
-                    if (currentEndValue == tmpDomino.numberA || currentEndValue == tmpDomino.numberB){
-                        nodeAvailable[currentAdjacencyValue] = false;
-                        DominoTrainNode newNode = new DominoTrainNode(tmpDomino);
-                        if (currentEndValue == newNode.domino.numberA){
-                            newNode.numberARootward = true;
-                            currentEndValue = newNode.domino.numberB;
-                        }
-                        else {
-                            newNode.numberARootward = false;
-                            currentEndValue = newNode.domino.numberA;
-                        }
-                        newNode.parentNodeIndex = j;
-                        parentNode.nextNodeAIndex = currentAdjacencyValue;
-                        currentTrain.add(parentNode);
-                        currentTrain.add(newNode);
-                        parentNode = newNode;
-                        j = currentAdjacencyValue;
-                        k = 0;
-                    }
-                    else {
-                        k++;
-                    }
-                }
-                else {
-                    k++;
-                }
-                currentAdjacencyValue = dominoAdjacencyList.get(j).get(k);
-            }
-            dominoTrains.add(currentTrain);
-        }
-
-        TextView testText = (TextView) findViewById(R.id.trainBuilderTestText);
-        testText.setText(dominoTrains.toString());
-    }
-
-    private void DepthFirstSearch (ArrayList<ArrayList<DominoTrainNode>> dominoTrains){
 
     }
 
-    private void dfsRecursive(){
-
+    public void selectDominoes(View view) {
+        Intent intent = new Intent(getBaseContext(), SelectDominoesActivity.class);
+        intent.putExtra("dominoesString", Domino.getDominoesString(dominoes));
+        startActivity(intent);
     }
 }
