@@ -5,6 +5,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Stack;
 
 public class CalculateTrainsActivity extends AppCompatActivity {
     private ArrayList<Domino> dominoes;
@@ -24,6 +26,15 @@ public class CalculateTrainsActivity extends AppCompatActivity {
     private ArrayList<DominoTrain> uniqueTrains;
     private String dominoesString;
     private String startingPipsString;
+    private int dominoHeight;
+    int[] dominoImageIds;
+    int[] doublesDepth;
+
+    enum Direction{
+        CENTER,
+        BELOW,
+        ABOVE
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,9 +44,11 @@ public class CalculateTrainsActivity extends AppCompatActivity {
         SelectDominoesActivity.thisActivity.finish();
 
         //dominoesString = getIntent().getStringExtra("dominoesString");
-        dominoesString = "2,1;1,3;0,3;3,5;4,5;3,3;";
+        //dominoesString = "2,1;1,3;0,3;3,5;4,5;3,3;";
+        dominoesString = "5,4;4,10;10,10;10,12;12,1;10,3;3,7;7,7;7,8;7,12;7,1;1,3;1,9;10,6;6,8;7,4;";
         //startingPipsString = getIntent().getStringExtra("startingPips");
-        startingPipsString = "2";
+        //startingPipsString = "2";
+        startingPipsString = "5";
         dominoes = Domino.decodeDominoes(dominoesString);
         trainSolver = new DominoTrainSolver(dominoes);
         solvedTrains = trainSolver.solveForTrains(Integer.parseInt(startingPipsString));
@@ -94,9 +107,10 @@ public class CalculateTrainsActivity extends AppCompatActivity {
 
         // Now, to draw the dominoes
         // associate each domino with their ImageView ID
-        int[] dominoImageIds = new int[train.train.size()];
+        dominoImageIds = new int[train.train.size()];
+        doublesDepth = new int[train.train.size()];
         //String dominoHeight = Integer.toString(48 / train.numDoubles) + "dp";
-        int dominoHeight = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48 , getResources().getDisplayMetrics()));
+        dominoHeight = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, (int) (48 / (1 + train.length/10)) , getResources().getDisplayMetrics()));
 
         // Start with root domino because it has special constraints
         ImageView firstDomino = createEmptyDomino();
@@ -111,13 +125,97 @@ public class CalculateTrainsActivity extends AppCompatActivity {
         constraintSet.constrainWidth(firstDomino.getId(), ConstraintLayout.LayoutParams.WRAP_CONTENT);
         constraintSet.constrainHeight(firstDomino.getId(), dominoHeight);
         constraintSet.applyTo(parentConstraintLayout);
-        //ConstraintLayout.LayoutParams firstDominoParams = new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT, dominoHeight);
-        ConstraintLayout.LayoutParams firstDominoParams = (ConstraintLayout.LayoutParams) firstDomino.getLayoutParams();
-        //firstDominoParams.width = ConstraintLayout.LayoutParams.WRAP_CONTENT;
-        //firstDominoParams.height = dominoHeight;
-        //firstDomino.setLayoutParams(firstDominoParams);
 
-        addPipImages(parentConstraintLayout, firstDomino.getId(), train.train.get(0).domino.numberA, train.train.get(0).domino.numberB);
+        addPipImages(parentConstraintLayout, firstDomino.getId(), train.train.get(0));
+        // Draw the rest of the dominoes
+        doublesDepth[train.rootIndex] = 0;
+        Stack<Integer> nodesToVisit = new Stack<>();
+        nodesToVisit.push(train.train.get(0).nextNodeAIndex);
+        while (!nodesToVisit.isEmpty()){
+            int currentNodeIndex = nodesToVisit.pop();
+            DominoTrainNode currentNode = train.train.get(currentNodeIndex);
+            int parentNodeIndex = currentNode.parentNodeIndex;
+            DominoTrainNode parentNode = train.train.get(parentNodeIndex);
+            doublesDepth[currentNodeIndex] = doublesDepth[parentNodeIndex];
+            // Domino to draw is directly ahead of its parent
+            if (parentNode.nextNodeAIndex == currentNodeIndex){
+                drawDomino(parentConstraintLayout, currentNodeIndex, parentNodeIndex, Direction.CENTER, currentNode, train.numDoubles);
+            }
+            // Domino to draw is below its parent
+            else if (parentNode.nextNodeBIndex == currentNodeIndex){
+                doublesDepth[currentNodeIndex]++;
+                drawDomino(parentConstraintLayout, currentNodeIndex, parentNodeIndex, Direction.BELOW, currentNode, train.numDoubles);
+            }
+            // Domino to draw is above its parent
+            else if (parentNode.nextNodeCIndex == currentNodeIndex){
+                doublesDepth[currentNodeIndex]++;
+                drawDomino(parentConstraintLayout, currentNodeIndex, parentNodeIndex, Direction.ABOVE, currentNode, train.numDoubles);
+            }
+
+            if (currentNode.nextNodeAIndex != -1){
+                nodesToVisit.push(currentNode.nextNodeAIndex);
+                if (currentNode.nextNodeBIndex != -1){
+                    nodesToVisit.push(currentNode.nextNodeBIndex);
+                    if (currentNode.nextNodeCIndex != -1){
+                        nodesToVisit.push(currentNode.nextNodeCIndex);
+                    }
+                }
+            }
+        }
+    }
+
+    private void drawDomino(ConstraintLayout parentLayout, int nodeIndex, int parentIndex, Direction direction, DominoTrainNode currentNode, int numDoubles){
+        // Create empty domino
+        ImageView currentDomino = createEmptyDomino();
+        int currentDominoId = currentDomino.getId();
+        int parentDominoId = dominoImageIds[parentIndex];
+        dominoImageIds[nodeIndex] = currentDominoId;
+        parentLayout.addView(currentDomino);
+
+        // Check if connecting line is needed
+        // Done prior to cloning parent constraints b/c must be added now if needed later
+        int connectingLineId = -1;
+        int margin = -1;
+        if (direction != Direction.CENTER){
+            View connectingLine = new View(this);
+            connectingLineId = View.generateViewId();
+            connectingLine.setId(connectingLineId);
+            connectingLine.setBackgroundColor(this.getColor(R.color.black));
+            parentLayout.addView(connectingLine);
+        }
+
+        // Constrain empty domino with appropriate relation to their parent domino
+        ConstraintSet constraintSet = new ConstraintSet();
+        constraintSet.clone(parentLayout);
+        constraintSet.connect(currentDominoId, ConstraintSet.START, parentDominoId, ConstraintSet.END);
+        constraintSet.constrainWidth(currentDominoId, ConstraintLayout.LayoutParams.WRAP_CONTENT);
+        constraintSet.constrainHeight(currentDominoId, dominoHeight);
+        if (direction == Direction.CENTER){
+            constraintSet.connect(currentDominoId, ConstraintSet.TOP, parentDominoId, ConstraintSet.TOP);
+            constraintSet.connect(currentDominoId, ConstraintSet.BOTTOM, parentDominoId, ConstraintSet.BOTTOM);
+        }
+        // Setup connecting line for non-center position dominoes, also calculate gap distance
+        else {
+            constraintSet.connect(connectingLineId, ConstraintSet.START, currentDominoId, ConstraintSet.START);
+            constraintSet.constrainWidth(connectingLineId, Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3, getResources().getDisplayMetrics())));
+            constraintSet.constrainHeight(connectingLineId, ConstraintLayout.LayoutParams.MATCH_CONSTRAINT);
+            int gap = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, getResources().getDisplayMetrics()));
+            margin = gap + (numDoubles - doublesDepth[nodeIndex]) * (gap + dominoHeight);
+        }
+        if (direction == Direction.BELOW){
+            constraintSet.connect(currentDominoId, ConstraintSet.TOP, parentDominoId, ConstraintSet.BOTTOM, margin);
+            constraintSet.connect(connectingLineId, ConstraintSet.BOTTOM, currentDominoId, ConstraintSet.TOP);
+            constraintSet.connect(connectingLineId, ConstraintSet.TOP, parentDominoId, ConstraintSet.BOTTOM);
+
+        }
+        else if (direction == Direction.ABOVE){
+            constraintSet.connect(currentDominoId, ConstraintSet.BOTTOM, parentDominoId, ConstraintSet.TOP, margin);
+            constraintSet.connect(connectingLineId, ConstraintSet.TOP, currentDominoId, ConstraintSet.BOTTOM);
+            constraintSet.connect(connectingLineId, ConstraintSet.BOTTOM, parentDominoId, ConstraintSet.TOP);
+        }
+
+        constraintSet.applyTo(parentLayout);
+        addPipImages(parentLayout, currentDominoId, currentNode);
     }
 
     private ImageView createEmptyDomino(){
@@ -130,7 +228,17 @@ public class CalculateTrainsActivity extends AppCompatActivity {
     }
 
     // Adds the pip images (with ConstraintLayout) to a blank domino
-    private void addPipImages(ConstraintLayout parentLayout, int dominoID, int numberA, int numberB){
+    private void addPipImages(ConstraintLayout parentLayout, int dominoID, DominoTrainNode dominoTrainNode){
+        int numberA;
+        int numberB;
+        if (dominoTrainNode.numberARootward){
+            numberA = dominoTrainNode.domino.numberA;
+            numberB = dominoTrainNode.domino.numberB;
+        }
+        else {
+            numberA = dominoTrainNode.domino.numberB;
+            numberB = dominoTrainNode.domino.numberA;
+        }
         ConstraintLayout constraintLayout = new ConstraintLayout(this);
         ImageView pipsImageA = new ImageView(this);
         ImageView pipsImageB = new ImageView(this);
