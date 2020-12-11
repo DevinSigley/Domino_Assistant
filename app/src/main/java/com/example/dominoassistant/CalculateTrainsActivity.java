@@ -43,12 +43,12 @@ public class CalculateTrainsActivity extends AppCompatActivity {
         setTitle("Best Potential Trains");
         SelectDominoesActivity.thisActivity.finish();
 
-        //dominoesString = getIntent().getStringExtra("dominoesString");
+        dominoesString = getIntent().getStringExtra("dominoesString");
         //dominoesString = "2,1;1,3;0,3;3,5;4,5;3,3;";
-        dominoesString = "5,4;4,10;10,10;10,12;12,1;10,3;3,7;7,7;7,8;7,12;7,1;1,3;1,9;10,6;6,8;7,4;";
-        //startingPipsString = getIntent().getStringExtra("startingPips");
+        //dominoesString = "5,4;4,10;10,10;10,12;12,1;10,3;3,7;7,7;7,8;7,12;7,1;1,3;1,9;10,6;6,8;7,4;";
+        startingPipsString = getIntent().getStringExtra("startingPips");
         //startingPipsString = "2";
-        startingPipsString = "5";
+        //startingPipsString = "5";
         dominoes = Domino.decodeDominoes(dominoesString);
         trainSolver = new DominoTrainSolver(dominoes);
         solvedTrains = trainSolver.solveForTrains(Integer.parseInt(startingPipsString));
@@ -68,7 +68,13 @@ public class CalculateTrainsActivity extends AppCompatActivity {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                drawTrain(0, 2);
+                drawTrain(0, 1);
+                if (uniqueTrains.size() > 1){
+                    drawTrain(1, 2);
+                }
+                if (uniqueTrains.size() > 2){
+                    drawTrain(2, 3);
+                }
             }
         });
         //drawTrain(0, 2);
@@ -126,29 +132,32 @@ public class CalculateTrainsActivity extends AppCompatActivity {
         constraintSet.constrainHeight(firstDomino.getId(), dominoHeight);
         constraintSet.applyTo(parentConstraintLayout);
 
-        addPipImages(parentConstraintLayout, firstDomino.getId(), train.train.get(0));
+        addPipImages(parentConstraintLayout, firstDomino.getId(), train.train.get(train.rootIndex));
         // Draw the rest of the dominoes
         doublesDepth[train.rootIndex] = 0;
         Stack<Integer> nodesToVisit = new Stack<>();
-        nodesToVisit.push(train.train.get(0).nextNodeAIndex);
+        nodesToVisit.push(train.train.get(train.rootIndex).nextNodeAIndex);
         while (!nodesToVisit.isEmpty()){
             int currentNodeIndex = nodesToVisit.pop();
             DominoTrainNode currentNode = train.train.get(currentNodeIndex);
             int parentNodeIndex = currentNode.parentNodeIndex;
             DominoTrainNode parentNode = train.train.get(parentNodeIndex);
             doublesDepth[currentNodeIndex] = doublesDepth[parentNodeIndex];
+            if (parentNode.doubleTile){
+                doublesDepth[currentNodeIndex]++;
+            }
             // Domino to draw is directly ahead of its parent
             if (parentNode.nextNodeAIndex == currentNodeIndex){
                 drawDomino(parentConstraintLayout, currentNodeIndex, parentNodeIndex, Direction.CENTER, currentNode, train.numDoubles);
             }
             // Domino to draw is below its parent
             else if (parentNode.nextNodeBIndex == currentNodeIndex){
-                doublesDepth[currentNodeIndex]++;
+                //doublesDepth[currentNodeIndex]++;
                 drawDomino(parentConstraintLayout, currentNodeIndex, parentNodeIndex, Direction.BELOW, currentNode, train.numDoubles);
             }
             // Domino to draw is above its parent
             else if (parentNode.nextNodeCIndex == currentNodeIndex){
-                doublesDepth[currentNodeIndex]++;
+               //doublesDepth[currentNodeIndex]++;
                 drawDomino(parentConstraintLayout, currentNodeIndex, parentNodeIndex, Direction.ABOVE, currentNode, train.numDoubles);
             }
 
