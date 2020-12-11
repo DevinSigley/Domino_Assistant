@@ -40,6 +40,13 @@ public class Domino {
                 tmpDomino.numberB = 10 + Character.getNumericValue(dominoes.charAt(i+2));
             }
 
+            if (tmpDomino.numberA > 12){
+                tmpDomino.numberA = 12;
+            }
+            if (tmpDomino.numberB > 12){
+                tmpDomino.numberB = 12;
+            }
+
             // don't allow duplicates
             if (!resultList.contains(tmpDomino)){
                 resultList.add(tmpDomino);

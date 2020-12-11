@@ -244,5 +244,6 @@ public class CameraActivity extends Activity implements CvCameraViewListener2 {
         Intent intent = new Intent(getBaseContext(), SelectDominoesActivity.class);
         intent.putExtra("dominoesString", dominoesString);
         startActivity(intent);
+        finish();
     }
 }

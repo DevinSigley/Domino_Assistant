@@ -34,12 +34,20 @@ import java.util.zip.Inflater;
 public class SelectDominoesActivity extends AppCompatActivity {
     private Button addDominoButton;
     private ArrayList<Domino> dominoes;
+    public static AppCompatActivity thisActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setTitle("Domino Selection");
         setContentView(R.layout.activity_select_dominoes);
+
+        // Finish previous instance of this Activity
+        if (thisActivity != null){
+            thisActivity.finish();
+        }
+        thisActivity = this;
 
         // Get the dominoes sent via Intent
         String dominoesString = getIntent().getStringExtra("dominoesString");
@@ -121,6 +129,7 @@ public class SelectDominoesActivity extends AppCompatActivity {
         Intent intent = new Intent(getBaseContext(), SelectDominoesActivity.class);
         intent.putExtra("dominoesString", Domino.getDominoesString(dominoes));
         startActivity(intent);
+        finish();
     }
 
     // Given a number of pips, returns the ID of the corresponding image
@@ -184,6 +193,7 @@ public class SelectDominoesActivity extends AppCompatActivity {
         if (id == R.id.action_clear_dominoes) {
             Intent intent = new Intent(getBaseContext(), SelectDominoesActivity.class);
             startActivity(intent);
+            finish();
         }
         return super.onOptionsItemSelected(item);
     }

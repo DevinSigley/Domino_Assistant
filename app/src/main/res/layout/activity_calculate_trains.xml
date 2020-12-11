@@ -18,51 +18,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
-        android:id="@+id/calculateTrainsTrainText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="Train"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/calculateTrainsLengthText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:text="Length"
-        app:layout_constraintEnd_toStartOf="@+id/calculateTrainsDoublesText"
-        app:layout_constraintTop_toTopOf="@+id/calculateTrainsTrainText" />
-
-    <View
-        android:id="@+id/dividerTrainLength"
-        android:layout_width="1dp"
-        android:layout_height="0dp"
-        android:background="?android:attr/listDivider"
-        app:layout_constraintBottom_toTopOf="@+id/calculateTrainsSelectDominoButton"
-        app:layout_constraintEnd_toStartOf="@+id/calculateTrainsLengthText"
-        app:layout_constraintStart_toEndOf="@+id/calculateTrainsTrainText" />
-
-    <View
-        android:id="@+id/dividerLengthDoubles"
-        android:layout_width="1dp"
-        android:layout_height="0dp"
-        android:background="?android:attr/listDivider"
-        app:layout_constraintBottom_toBottomOf="@id/dividerTrainLength"
-        app:layout_constraintEnd_toStartOf="@+id/calculateTrainsDoublesText"
-        app:layout_constraintStart_toEndOf="@+id/calculateTrainsLengthText" />
-
-    <View
-        android:id="@+id/dividerDoublesPoints"
-        android:layout_width="1dp"
-        android:layout_height="0dp"
-        android:background="?android:attr/listDivider"
-        app:layout_constraintBottom_toBottomOf="@id/dividerTrainLength"
-        app:layout_constraintEnd_toStartOf="@+id/calculateTrainsPointsText"
-        app:layout_constraintStart_toEndOf="@+id/calculateTrainsDoublesText" />
 
     <View
         android:id="@+id/dividerBottom"
@@ -72,40 +27,353 @@
         app:layout_constraintBottom_toTopOf="@+id/calculateTrainsSelectDominoButton"
         app:layout_constraintStart_toStartOf="parent" />
 
+
+    <TextView
+        android:id="@+id/trainDescText1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:text="Length: xx\nDoubles: xx\nPoints: xx"
+        android:textSize="10sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <HorizontalScrollView
+        android:id="@+id/trainHorScroll1"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        app:layout_constraintBottom_toTopOf="@id/dividerTrain1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ScrollView
+            android:id="@+id/trainVerScroll1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/trainConstraint1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/imageView333"
+                    android:layout_width="wrap_content"
+                    android:layout_height="64dp"
+                    android:layout_marginStart="4dp"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerInside"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/blank_domino_graphic_transparent" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    app:layout_constraintBottom_toBottomOf="@id/imageView333"
+                    app:layout_constraintEnd_toEndOf="@id/imageView333"
+                    app:layout_constraintStart_toStartOf="@id/imageView333"
+                    app:layout_constraintTop_toTopOf="@id/imageView333">
+
+                    <ImageView
+                        android:id="@+id/imageView233"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/imageView34"
+                        app:layout_constraintHeight_percent=".8"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/pips_five" />
+
+                    <ImageView
+                        android:id="@+id/imageView34"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHeight_percent=".8"
+                        app:layout_constraintStart_toEndOf="@id/imageView233"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/pips_ten" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <ImageView
+                    android:id="@+id/imageView3333"
+                    android:layout_width="wrap_content"
+                    android:layout_height="64dp"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerInside"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/imageView333"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/blank_domino_graphic_transparent" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    app:layout_constraintBottom_toBottomOf="@id/imageView3333"
+                    app:layout_constraintEnd_toEndOf="@id/imageView3333"
+                    app:layout_constraintStart_toStartOf="@id/imageView3333"
+                    app:layout_constraintTop_toTopOf="@id/imageView3333">
+
+                    <ImageView
+                        android:id="@+id/imageView2333"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/imageView344"
+                        app:layout_constraintHeight_percent=".8"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/pips_five" />
+
+                    <ImageView
+                        android:id="@+id/imageView344"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHeight_percent=".8"
+                        app:layout_constraintStart_toEndOf="@id/imageView2333"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/pips_ten" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <ImageView
+                    android:id="@+id/imageView33336"
+                    android:layout_width="wrap_content"
+                    android:layout_height="64dp"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerInside"
+                    app:layout_constraintBottom_toTopOf="@id/imageView333"
+                    app:layout_constraintStart_toEndOf="@id/imageView333"
+                    app:srcCompat="@drawable/blank_domino_graphic_transparent" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    app:layout_constraintBottom_toBottomOf="@id/imageView33336"
+                    app:layout_constraintEnd_toEndOf="@id/imageView33336"
+                    app:layout_constraintStart_toStartOf="@id/imageView33336"
+                    app:layout_constraintTop_toTopOf="@id/imageView33336">
+
+                    <ImageView
+                        android:id="@+id/imageView23336"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/imageView3446"
+                        app:layout_constraintHeight_percent=".8"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/pips_five" />
+
+                    <ImageView
+                        android:id="@+id/imageView3446"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHeight_percent=".8"
+                        app:layout_constraintStart_toEndOf="@id/imageView23336"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/pips_ten" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <View
+                    android:id="@+id/doubleConnector"
+                    android:layout_width="2dp"
+                    android:layout_height="0dp"
+                    android:background="@android:color/black"
+                    app:layout_constraintBottom_toTopOf="@id/imageView333366"
+                    app:layout_constraintStart_toEndOf="@id/imageView333"
+                    app:layout_constraintTop_toBottomOf="@id/imageView333" />
+
+                <ImageView
+                    android:id="@+id/imageView333366"
+                    android:layout_width="wrap_content"
+                    android:layout_height="64dp"
+                    android:layout_marginTop="16dp"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerInside"
+                    app:layout_constraintStart_toEndOf="@id/imageView333"
+                    app:layout_constraintTop_toBottomOf="@id/imageView333"
+                    app:srcCompat="@drawable/blank_domino_graphic_transparent" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    app:layout_constraintBottom_toBottomOf="@id/imageView333366"
+                    app:layout_constraintEnd_toEndOf="@id/imageView333366"
+                    app:layout_constraintStart_toStartOf="@id/imageView333366"
+                    app:layout_constraintTop_toTopOf="@id/imageView333366">
+
+                    <ImageView
+                        android:id="@+id/imageView233366"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/imageView34466"
+                        app:layout_constraintHeight_percent=".8"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/pips_five" />
+
+                    <ImageView
+                        android:id="@+id/imageView34466"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHeight_percent=".8"
+                        app:layout_constraintStart_toEndOf="@id/imageView233366"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/pips_ten" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <ImageView
+                    android:id="@+id/imageView33333"
+                    android:layout_width="wrap_content"
+                    android:layout_height="64dp"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerInside"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/imageView3333"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/blank_domino_graphic_transparent" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    app:layout_constraintBottom_toBottomOf="@id/imageView33333"
+                    app:layout_constraintEnd_toEndOf="@id/imageView33333"
+                    app:layout_constraintStart_toStartOf="@id/imageView33333"
+                    app:layout_constraintTop_toTopOf="@id/imageView33333">
+
+                    <ImageView
+                        android:id="@+id/imageView23333"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/imageView3444"
+                        app:layout_constraintHeight_percent=".8"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/pips_five" />
+
+                    <ImageView
+                        android:id="@+id/imageView3444"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHeight_percent=".8"
+                        app:layout_constraintStart_toEndOf="@id/imageView23333"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/pips_ten" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
+
+
+    </HorizontalScrollView>
+
     <View
-        android:id="@+id/dividerTop"
+        android:id="@+id/dividerTrain1"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="?android:attr/listDivider"
-        app:layout_constraintBottom_toBottomOf="@+id/calculateTrainsTrainText"
+        app:layout_constraintBottom_toTopOf="@+id/dividerTrain2"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/calculateTrainsDoublesText"
+        android:id="@+id/trainDescText2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:text="Doubles"
-        app:layout_constraintEnd_toStartOf="@+id/calculateTrainsPointsText"
-        app:layout_constraintTop_toTopOf="@+id/calculateTrainsLengthText" />
+        android:layout_marginStart="4dp"
+        android:text="Length: xx\nDoubles: xx\nPoints: xx"
+        android:textSize="10sp"
+        app:layout_constraintStart_toStartOf="@id/dividerTrain1"
+        app:layout_constraintTop_toTopOf="@id/dividerTrain1" />
+
+    <HorizontalScrollView
+        android:id="@+id/trainHorScroll2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        app:layout_constraintBottom_toTopOf="@id/dividerTrain2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/dividerTrain1">
+
+        <ScrollView
+            android:id="@+id/trainVerScroll2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/trainConstraint2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
+    </HorizontalScrollView>
+
+    <View
+        android:id="@+id/dividerTrain2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintTop_toTopOf="@id/dividerTrain1"
+        app:layout_constraintBottom_toTopOf="@+id/dividerBottom"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/calculateTrainsPointsText"
+        android:id="@+id/trainDescText3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:text="Points"
+        android:layout_marginStart="4dp"
+        android:text="Length: xx\nDoubles: xx\nPoints: xx"
+        android:textSize="10sp"
+        app:layout_constraintStart_toStartOf="@id/dividerTrain2"
+        app:layout_constraintTop_toTopOf="@id/dividerTrain2" />
+
+    <HorizontalScrollView
+        android:id="@+id/trainHorScroll3"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        app:layout_constraintBottom_toTopOf="@id/dividerBottom"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/calculateTrainsDoublesText" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/dividerTrain2">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/calculateTrainsTrainText"
-        tools:layout_editor_absoluteX="28dp">
+        <ScrollView
+            android:id="@+id/trainVerScroll3"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/trainConstraint3"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
+    </HorizontalScrollView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

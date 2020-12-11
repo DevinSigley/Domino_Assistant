@@ -10,6 +10,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 public class SelectStartingPipActivity extends Activity {
     private String dominoesString;
     private EditText pipsInput;
@@ -36,10 +38,26 @@ public class SelectStartingPipActivity extends Activity {
             Toast.makeText(this, "Please enter the starting pip value", Toast.LENGTH_LONG).show();
         }
         else {
-            Intent intent = new Intent(getBaseContext(), CalculateTrainsActivity.class);
-            intent.putExtra("dominoesString", dominoesString);
-            intent.putExtra("startingPips", startingPips);
-            startActivity(intent);
+            ArrayList<Domino> dominoes = Domino.decodeDominoes(dominoesString);
+            int pips = Integer.parseInt(startingPips);
+            boolean trainPossible = false;
+            for (int i = 0; i < dominoes.size() && !trainPossible; ++i){
+                if (dominoes.get(i).numberA == pips || dominoes.get(i).numberB == pips){
+                    trainPossible = true;
+                }
+            }
+
+            if (trainPossible){
+                Intent intent = new Intent(getBaseContext(), CalculateTrainsActivity.class);
+                intent.putExtra("dominoesString", dominoesString);
+                intent.putExtra("startingPips", startingPips);
+                startActivity(intent);
+                finish();
+            }
+            else {
+                Toast.makeText(this, "No trains can be made with that starting value", Toast.LENGTH_LONG).show();
+            }
+
         }
 
     }

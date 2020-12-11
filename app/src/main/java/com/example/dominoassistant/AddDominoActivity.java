@@ -37,6 +37,7 @@ public class AddDominoActivity extends Activity {//extends AppCompatActivity {
         Intent intent = new Intent(getBaseContext(), CameraActivity.class);
         intent.putExtra("dominoesString", dominoesString);
         startActivity(intent);
+        finish();
     }
 
     public void submitNewDomino(View view) {
@@ -56,6 +57,7 @@ public class AddDominoActivity extends Activity {//extends AppCompatActivity {
             Intent intent = new Intent(getBaseContext(), SelectDominoesActivity.class);
             intent.putExtra("dominoesString", dominoesString);
             startActivity(intent);
+            finish();
         }
     }
 }
