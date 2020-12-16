@@ -41,7 +41,6 @@ public class CalculateTrainsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calculate_trains);
         setTitle("Best Potential Trains");
-        SelectDominoesActivity.thisActivity.finish();
 
         dominoesString = getIntent().getStringExtra("dominoesString");
         //dominoesString = "2,1;1,3;0,3;3,5;4,5;3,3;";
@@ -81,10 +80,10 @@ public class CalculateTrainsActivity extends AppCompatActivity {
     }
 
     public void selectDominoes(View view) {
-        Intent intent = new Intent(getBaseContext(), SelectDominoesActivity.class);
-        //intent.putExtra("dominoesString", Domino.getDominoesString(dominoes));
-        intent.putExtra("dominoesString", dominoesString);
-        startActivity(intent);
+        //SelectDominoesActivity.thisActivity.finish();
+        //Intent intent = new Intent(getBaseContext(), SelectDominoesActivity.class);
+        //intent.putExtra("dominoesString", dominoesString);
+        //startActivity(intent);
         finish();
     }
 
