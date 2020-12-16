@@ -34,10 +34,13 @@ public class MainActivity extends AppCompatActivity {
 package com.example.dominoassistant;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
+
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import android.util.Log;
 import android.view.SurfaceView;
@@ -55,9 +58,7 @@ import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.core.Mat;
 
-import java.util.ArrayList;
-
-public class CameraActivity extends Activity implements CvCameraViewListener2 {
+public class CameraActivity extends AppCompatActivity implements CvCameraViewListener2 {
     private static final String TAG = "MainActivity";
     private static final int CAMERA_PERMISSION_REQUEST = 1;
     private boolean userStopped = false;
@@ -100,6 +101,7 @@ public class CameraActivity extends Activity implements CvCameraViewListener2 {
         }
         Log.i(TAG, "called onCreate");
         super.onCreate(savedInstanceState);
+        setTitle("Visual Domino Selection");
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         // Permissions for Android 6+
@@ -109,7 +111,7 @@ public class CameraActivity extends Activity implements CvCameraViewListener2 {
                 CAMERA_PERMISSION_REQUEST
         );
 
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_camera);
 
         mOpenCvCameraView = findViewById(R.id.main_surface);
 
@@ -213,11 +215,15 @@ public class CameraActivity extends Activity implements CvCameraViewListener2 {
         if (button.getText().equals(getResources().getString(R.string.pause_camera))){
             mOpenCvCameraView.disableView();
             button.setText(getResources().getString(R.string.resume_camera));
+            //button.setBackgroundColor(Color.parseColor("#4CAF50"));
+            button.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#4CAF50")));
             captureDominoesButton.setVisibility(View.VISIBLE);
         }
         else {
             mOpenCvCameraView.enableView();
             button.setText(getResources().getString(R.string.pause_camera));
+            //button.setBackgroundColor(Color.parseColor("#F44336"));
+            button.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#F44336")));
             captureDominoesButton.setVisibility(View.INVISIBLE);
         }
     }
