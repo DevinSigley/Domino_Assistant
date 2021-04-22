@@ -35,5 +35,3 @@ https://user-images.githubusercontent.com/6509842/115329948-16b82a80-a161-11eb-8
 
 ### Generating trains based upon selection
 https://user-images.githubusercontent.com/6509842/115329971-22a3ec80-a161-11eb-92e4-39d509d0c486.mp4
-
-![circle-cropped (2)](https://user-images.githubusercontent.com/6509842/115637331-e6e26180-a2dd-11eb-9215-f2b10f2f7f1d.png)
