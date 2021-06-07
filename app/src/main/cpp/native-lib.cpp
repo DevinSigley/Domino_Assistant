@@ -1,44 +1,7 @@
-//#include <jni.h>
-//#include <string>
-//
-//extern "C" JNIEXPORT jstring JNICALL
-//Java_com_example_dominoassistant_MainActivity_stringFromJNI(
-//        JNIEnv* env,
-//        jobject /* this */) {
-//    std::string hello = "Hello from C++";
-//    return env->NewStringUTF(hello.c_str());
-//}
-
 #include <jni.h>
 #include <android/log.h>
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
-
-#define TAG "NativeLib"
-
-//using namespace std;
-//using namespace cv;
-/*
-extern "C" {
-void JNICALL
-Java_com_example_dominoassistant_MainActivity_adaptiveThresholdFromJNI(JNIEnv *env,
-                                                                                   jobject instance,
-                                                                                   jlong matAddr) {
-
-        // get Mat from raw address
-        Mat &mat = *(Mat *) matAddr;
-
-        clock_t begin = clock();
-
-        cv::adaptiveThreshold(mat, mat, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY_INV, 21, 5);
-
-        // log computation time to Android Logcat
-        double totalTime = double(clock() - begin) / CLOCKS_PER_SEC;
-        __android_log_print(ANDROID_LOG_INFO, TAG, "adaptiveThreshold computation time = %f seconds\n",
-                            totalTime);
-    }
-}
-*/
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -59,9 +22,7 @@ bool checkForBisectLine(cv::Mat& inputImage, cv::RotatedRect& dominoRect);
 
 extern "C" {
 jstring JNICALL
-Java_com_example_dominoassistant_CameraActivity_processImageFromJNI(JNIEnv *env,
-                                                                    jobject instance,
-                                                                    jlong matAddr) {
+Java_com_example_dominoassistant_CameraActivity_processImageFromJNI(JNIEnv *env, jobject instance, jlong matAddr) {
     cv::Mat &image = *(cv::Mat *) matAddr;
     std::string resultString = "";
     // for some reason the image retrieved from camera is rotated 90deg CCW, so we have to rotate it to be normal
@@ -81,8 +42,7 @@ Java_com_example_dominoassistant_CameraActivity_processImageFromJNI(JNIEnv *env,
 
     std::vector<cv::Vec4i> contourHierarchy;
     std::vector<std::vector<cv::Point>> contoursTree;
-    cv::findContours(cannyImage, contoursTree, contourHierarchy, cv::RETR_TREE,
-                     cv::CHAIN_APPROX_NONE);
+    cv::findContours(cannyImage, contoursTree, contourHierarchy, cv::RETR_TREE,cv::CHAIN_APPROX_NONE);
 
     // Only process if there are some contours found.
     if (contoursTree.size() > 0){
