@@ -26,7 +26,7 @@ If a possible domino has not been filtered out by this point, then it's assumed 
 </details>
 
 ## Demo videos
-Note that the demo videos were recorded on a phone manufactured in 2016; newer phones would yield higher frame rates when running the vision processing portion of the app.
+Note that the demo videos were recorded on a phone manufactured in 2016; newer phones would yield higher frame rates when running the vision processing portion of the app. Additionally, the demo videos look best when maximized/fullscreen.
 
 ### Selecting dominoes via camera
 https://user-images.githubusercontent.com/6509842/115329964-1ddf3880-a161-11eb-9e0a-6bc282d025c1.mp4
