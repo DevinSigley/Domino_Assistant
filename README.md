@@ -8,7 +8,7 @@ An Android app to assist you when playing the Mexican train variant of dominoes.
 The app is written primarily in Java. I utilized the Java Native Interface to pass image data (captured in real time from the phone's camera) to C++ code for processing. Within the C++ code, I used OpenCV to identify each of the dominoes in the image. I went through the JNI to do the vision processing in C++ with the presumption that it'd be a little bit more performant than doing it in Java, in turn increasing the frame rate of the live preview.
 
 <details>
-  <summary markdown="span"><b>Click here to learn how the dominoes are detected</b></summary>
+  <summary markdown="span"><b><i>Click here to learn how the dominoes are detected</i></b></summary>
   
 Prior to creating this app I did a bit of market research on publicly available domino assistant apps, and I was disappointed in what I found. The apps were basic, simply tallying the number of perceived circles (at a very low frame rate) and not actually identifying dominoes. They were slow and prone to miscounting. This app aimed to isolate and identify each domino at an acceptably fast speed.
   
